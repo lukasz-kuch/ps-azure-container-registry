@@ -12,8 +12,8 @@
 RootModule = 'ps-azure-container-registry.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.1'
-ps-azure-container-registry
+ModuleVersion = '1.0.2'
+
 # Supported PSEditions
 # CompatiblePSEditions = @()
 
