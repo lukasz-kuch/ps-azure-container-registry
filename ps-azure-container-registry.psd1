@@ -12,8 +12,8 @@
 RootModule = 'ps-azure-container-registry.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.0'
-
+ModuleVersion = '1.0.1'
+ps-azure-container-registry
 # Supported PSEditions
 # CompatiblePSEditions = @()
 
@@ -71,7 +71,9 @@ Description = 'This module gets all Azure conatainer registry based on subscript
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
 	'Set-AzureLoginSession',
-	'Get-AzureContainerRegistry'
+	'Get-AzureContainerRegistry',
+  'Get-AzureRepository',
+  'Get-AzureRepositoryTags'
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
