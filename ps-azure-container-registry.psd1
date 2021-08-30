@@ -9,7 +9,7 @@
 @{
 
 # Script module or binary module file associated with this manifest.
-# RootModule = 'ps-azure-container-registry.psm1'
+RootModule = 'ps-azure-container-registry.psm1'
 
 # Version number of this module.
 ModuleVersion = '1.0.0'
@@ -30,7 +30,7 @@ CompanyName = 'Fujitsu'
 Copyright = '(c) Lukasz Kucharski. All rights reserved.'
 
 # Description of the functionality provided by this module
-# Description = 'This module gets all Azure conatainer registry based on subscription, including repositories and image tags'
+Description = 'This module gets all Azure conatainer registry based on subscription, including repositories and image tags'
 
 # Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = '6.0'
@@ -98,7 +98,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @("Azure Container Registry", "Azure Repository")
+        Tags = @("AzureContainerRegistry", "AzureRepository")
 
         # A URL to the license for this module.
         # LicenseUri = ''

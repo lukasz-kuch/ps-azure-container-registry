@@ -13,7 +13,7 @@ function Set-AzureLoginSession {
     .PARAMETER TenantId
         Azure service principal tenantId
   #>
-  [CmdletBinding()]
+  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'None')]
     param(
         [Parameter(Mandatory)]
         [string]$ClientId,
@@ -22,7 +22,10 @@ function Set-AzureLoginSession {
         [Parameter(Mandatory)]
         [string]$TenantId
     )
-    az login --service-principal -u $ClientId -p $ClientSecret --tenant $TenantId
+    if ($PSCmdlet.ShouldProcess($ClientId, $ClientSecret, $TenantId)) {
+      az login --service-principal -u $ClientId -p $ClientSecret -t $TenantId
+    }
+
 }
 function Get-AzureContainerRegistry {
   <#
@@ -52,7 +55,6 @@ function Get-AzureRepository {
     .PARAMETER RegistryName
         Azure container registry name.
   #>
-    [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
         [string]$RegistryName
@@ -68,7 +70,7 @@ function Get-AzureRepository {
 
     return $repObjList
 }
-function Get-AzureRepositoryTags {
+function Get-AzureRepositoryTag {
   <#
     .SYNOPSIS
         Get Azure repositories tags
