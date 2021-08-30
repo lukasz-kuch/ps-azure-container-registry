@@ -44,6 +44,34 @@ function Get-AzureContainerRegistry {
 
     return $registries
 }
+
+function Get-AzureRepository {
+  <#
+    .SYNOPSIS
+        Get Azure repositories
+    .DESCRIPTION
+        Get all repositories for particular subscription
+    .EXAMPLE
+        Get-AzureRepository
+    .PARAMETER RegistryName
+        Azure container registry name.
+  #>
+  [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string]$RegistryName
+    )
+    $repoList = az acr repository list -n $RegistryName | ConvertFrom-Json
+    [System.Collections.ArrayList]$repObjList = New-Object -TypeName "System.Collections.ArrayList"
+    $repoObj = New-Object -TypeName psobject -Property @{name= $RegistryName}
+    $repoList | ForEach-Object {
+        $repoTags = Get-AzureRepositoryTag -RegistryName $RegistryName -RepositoryName $_
+        $repoObj | Add-Member -Name 'tags' -Type NoteProperty -Value $repoTags
+        $repObjList.Add($repoObj) | Out-Null
+    }
+
+    return $repObjList
+}
 function Get-AzureRepositoryTag {
   <#
     .SYNOPSIS
@@ -66,31 +94,4 @@ function Get-AzureRepositoryTag {
 
     )
     return az acr repository show-tags --name $registryName --repository $repositoryName | ConvertFrom-Json
-}
-function Get-AzureRepository {
-  <#
-    .SYNOPSIS
-        Get Azure repositories
-    .DESCRIPTION
-        Get all repositories for particular subscription
-    .EXAMPLE
-        Get-AzureRepository
-    .PARAMETER RegistryName
-        Azure container registry name.
-  #>
-  [CmdletBinding()]
-    param(
-        [Parameter(Mandatory)]
-        [string]$RegistryName
-    )
-    $repoList = az acr repository list -n $RegistryName | ConvertFrom-Json
-    [System.Collections.ArrayList]$repObjList = New-Object -TypeName "System.Collections.ArrayList"
-    $repoObj = New-Object -TypeName psobject -Property @{name= $RegistryName}
-    $repoList | ForEach-Object {
-        $repoTags = Get-AzureRepositoryTags -RegistryName $RegistryName -RepositoryName $_
-        $repoObj | Add-Member -Name 'tags' -Type NoteProperty -Value $repoTags
-        $repObjList.Add($repoObj) | Out-Null
-    }
-
-    return $repObjList
 }
