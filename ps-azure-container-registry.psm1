@@ -59,6 +59,7 @@ function Get-AzureRepository {
         Azure container registry name.
   #>
   [CmdletBinding()]
+  [OutputType([System.Collections.ArrayList])]
   param(
     [Parameter(Mandatory)]
     [string]$RegistryName
@@ -92,6 +93,7 @@ function Get-AzureRepositoryTag {
         Azure repository name based on chosen container registry.
   #>
   [CmdletBinding()]
+  [OutputType([System.Collections.ArrayList])]
   param(
     [Parameter(Mandatory)]
     [string]$RegistryName,
