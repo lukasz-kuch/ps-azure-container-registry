@@ -14,17 +14,17 @@ function Set-AzureLoginSession {
         Azure service principal tenantId
   #>
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'None')]
-    param(
-        [Parameter(Mandatory)]
-        [string]$ClientId,
-        [Parameter(Mandatory)]
-        [string]$ClientSecret,
-        [Parameter(Mandatory)]
-        [string]$TenantId
-    )
-    if ($PSCmdlet.ShouldProcess($ClientId, $ClientSecret, $TenantId)) {
-      az login --service-principal -u $ClientId -p $ClientSecret -t $TenantId
-    }
+  param(
+    [Parameter(Mandatory)]
+    [string]$ClientId,
+    [Parameter(Mandatory)]
+    [string]$ClientSecret,
+    [Parameter(Mandatory)]
+    [string]$TenantId
+  )
+  if ($PSCmdlet.ShouldProcess($ClientId, $ClientSecret, $TenantId)) {
+    az login --service-principal -u $ClientId -p $ClientSecret -t $TenantId
+  }
 
 }
 function Get-AzureContainerRegistry {
@@ -36,13 +36,15 @@ function Get-AzureContainerRegistry {
     .EXAMPLE
         Get-AzureRegistry
   #>
-    $registries = az acr list | ConvertFrom-Json
-    $registries | ForEach-Object {
+  [System.Collections.ArrayList]$registryList = New-Object -TypeName 'System.Collections.ArrayList'
+  $registries = az acr list | ConvertFrom-Json
+  $registries | ForEach-Object {
+    $registry = New-Object -TypeName psobject -Property @{name = $_.name; creationDate = $_.creationDate; id = $_.id; location = $_.location; loginServer = $_.loginServer; provisioningState = $_.provisioningState; resourceGroup = $_.resourceGroup; sku = $_.sku }
     $repositories = Get-AzureRepository -Registry $_.name
-    $_ | Add-Member -Name 'repositories' -Type NoteProperty -Value $repositories
-    }
-
-    return $registries
+    $registry | Add-Member -Name 'repositories' -Type NoteProperty -Value $repositories
+    $registryList.Add($registry) | Out-Null
+  }
+  return $registryList
 }
 
 function Get-AzureRepository {
@@ -57,20 +59,24 @@ function Get-AzureRepository {
         Azure container registry name.
   #>
   [CmdletBinding()]
-    param(
-        [Parameter(Mandatory)]
-        [string]$RegistryName
-    )
-    $repoList = az acr repository list -n $RegistryName | ConvertFrom-Json
-    [System.Collections.ArrayList]$repObjList = New-Object -TypeName "System.Collections.ArrayList"
-    $repoObj = New-Object -TypeName psobject -Property @{name= $RegistryName}
-    $repoList | ForEach-Object {
-        $repoTags = Get-AzureRepositoryTag -RegistryName $RegistryName -RepositoryName $_
-        $repoObj | Add-Member -Name 'tags' -Type NoteProperty -Value $repoTags
-        $repObjList.Add($repoObj) | Out-Null
+  param(
+    [Parameter(Mandatory)]
+    [string]$RegistryName
+  )
+  $repositories = az acr repository list -n $RegistryName | ConvertFrom-Json
+  [System.Collections.ArrayList]$repositoryList = New-Object -TypeName "System.Collections.ArrayList"
+  if ($repositories.Count -gt 0) {
+    $repository = New-Object -TypeName psobject -Property @{name = $RegistryName }
+    $repositories | ForEach-Object {
+      $repositoryTags = Get-AzureRepositoryTag -RegistryName $RegistryName -RepositoryName $_
+      $repository | Add-Member -Name 'tags' -Type NoteProperty -Value $repositoryTags
+      $repositoryList.Add($repository) | Out-Null
     }
-
-    return $repObjList
+  }
+  else {
+    return $repositoryList
+  }
+  return $repositoryList
 }
 function Get-AzureRepositoryTag {
   <#
@@ -86,12 +92,18 @@ function Get-AzureRepositoryTag {
         Azure repository name based on chosen container registry.
   #>
   [CmdletBinding()]
-    param(
-        [Parameter(Mandatory)]
-        [string]$RegistryName,
-        [Parameter(Mandatory)]
-        [string]$RepositoryName
+  param(
+    [Parameter(Mandatory)]
+    [string]$RegistryName,
+    [Parameter(Mandatory)]
+    [string]$RepositoryName
 
-    )
-    return az acr repository show-tags --name $registryName --repository $repositoryName | ConvertFrom-Json
+  )
+  $tags = az acr repository show-tags --name $RegistryName --repository $RepositoryName | ConvertFrom-Json
+  [System.Collections.ArrayList]$tagList = New-Object -TypeName 'System.Collections.ArrayList'
+
+  $tags | ForEach-Object {
+    $tagList.Add($_) | Out-Null
+  }
+  return $tagList
 }

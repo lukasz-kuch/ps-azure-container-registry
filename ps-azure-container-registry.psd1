@@ -12,7 +12,7 @@
 RootModule = 'ps-azure-container-registry.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.4'
+ModuleVersion = '1.0.5'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -100,7 +100,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @("AzureContainerRegistry", "AzureRepository")
+        Tags = @("Azure", "Container", "Registry", "Repository")
 
         # A URL to the license for this module.
         # LicenseUri = ''
