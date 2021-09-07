@@ -67,10 +67,9 @@ function Get-AzureRepository {
   $repositories = az acr repository list -n $RegistryName | ConvertFrom-Json
   [System.Collections.ArrayList]$repositoryList = New-Object -TypeName "System.Collections.ArrayList"
   if ($repositories.Count -gt 0) {
-    $repository = New-Object -TypeName psobject -Property @{name = $RegistryName }
     $repositories | ForEach-Object {
       $repositoryTags = Get-AzureRepositoryTag -RegistryName $RegistryName -RepositoryName $_
-      $repository | Add-Member -Name 'tags' -Type NoteProperty -Value $repositoryTags
+      $repository = New-Object -TypeName PSObject -Property @{'name' = $_;'tags' = $repositoryTags}
       $repositoryList.Add($repository) | Out-Null
     }
   }

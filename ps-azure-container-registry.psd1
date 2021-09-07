@@ -12,7 +12,7 @@
 RootModule = 'ps-azure-container-registry.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.5'
+ModuleVersion = '1.0.7'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -30,7 +30,7 @@ CompanyName = 'Fujitsu'
 Copyright = '(c) Lukasz Kucharski. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'This module gets all Azure conatainer registry based on subscription, including repositories and image tags'
+Description = 'This module gets all Azure container registry based on subscription, including repositories and image tags'
 
 # Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = '6.0'
