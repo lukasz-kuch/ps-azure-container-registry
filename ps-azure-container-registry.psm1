@@ -39,9 +39,15 @@ function Get-AzureContainerRegistry {
   [System.Collections.ArrayList]$registryList = New-Object -TypeName 'System.Collections.ArrayList'
   $registries = az acr list | ConvertFrom-Json
   $registries | ForEach-Object {
-    $registry = New-Object -TypeName psobject -Property @{name = $_.name; creationDate = $_.creationDate; id = $_.id; location = $_.location; loginServer = $_.loginServer; provisioningState = $_.provisioningState; resourceGroup = $_.resourceGroup; sku = $_.sku }
-    $repositories = Get-AzureRepository -Registry $_.name
+    $registry = New-Object -TypeName psobject -Property @{name = $_.name; creationDate = $_.creationDate; id = $_.id; location = $_.location; loginServer = $_.loginServer; provisioningState = $_.provisioningState; resourceGroup = $_.resourceGroup; sku = $_.sku}
+    $repositories = Get-AzureRepository -RegistryName $_.name
+    if($_.adminUserEnabled) {
+      $credential = Get-AzureRegistryCredential -RegistryName $_.name
+    } else {
+      $credential = $null
+    }
     $registry | Add-Member -Name 'repositories' -Type NoteProperty -Value $repositories
+    $registry | Add-Member -Name 'credential' -Type NoteProperty -Value $credential
     $registryList.Add($registry) | Out-Null
   }
   return $registryList
@@ -107,4 +113,27 @@ function Get-AzureRepositoryTag {
     $tagList.Add($_) | Out-Null
   }
   return $tagList
+}
+
+function Get-AzureRegistryCredential {
+  <#
+    .SYNOPSIS
+        Get registry credentials
+    .DESCRIPTION
+        Get registry credentials if admin enabled
+    .EXAMPLE
+        Get-AzureRegistryCredentials
+    .PARAMETER RegistryName
+        Azure container registry name.
+  #>
+  [CmdletBinding()]
+  [OutputType([PSCustomObject])]
+  param(
+    [Parameter(Mandatory)]
+    [string]$RegistryName
+  )
+
+  $credentials = az acr credential show -n $RegistryName | ConvertFrom-Json
+  $credentialObj = New-Object -TypeName psobject -Property @{'username' = $credentials.username;'password' = $credentials.passwords[0].value}
+  return $credentialObj
 }

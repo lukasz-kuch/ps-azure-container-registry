@@ -12,7 +12,7 @@
 RootModule = 'ps-azure-container-registry.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.7'
+ModuleVersion = '1.0.10'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -73,7 +73,8 @@ FunctionsToExport = @(
 	'Set-AzureLoginSession',
 	'Get-AzureContainerRegistry',
   'Get-AzureRepository',
-  'Get-AzureRepositoryTags'
+  'Get-AzureRepositoryTags',
+  'Get-AzureRegistryCredentials'
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
